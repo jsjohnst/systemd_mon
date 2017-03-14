@@ -1,5 +1,6 @@
 require 'systemd_mon/error'
 require 'systemd_mon/notifiers/base'
+require 'systemd_mon/formatters/state_table_formatter'
 
 begin
   require 'flowdock'
@@ -35,7 +36,7 @@ module SystemdMon::Notifiers
       message = "Systemd unit #{unit.name} on #{notification.hostname} #{unit.state_change.status_text}: #{unit.state.active} (#{unit.state.sub})"
 
       if unit.state_change.length > 1
-        message << SystemdMon::Formatters::StateTableFormatter.new(unit).as_text
+        message << '<pre>' + SystemdMon::Formatters::StateTableFormatter.new(unit).as_text + '</pre>'
       end
 
       thread_id = "#{unit.name}-#{notification.hostname}"
@@ -45,22 +46,25 @@ module SystemdMon::Notifiers
       log "sent flowdock notification"
     end
 
-  protected
+    protected
     attr_accessor :client, :options
 
     def chat(title, message, thread_id, shade, status)
       client.post_to_thread(
-         event: "activity",
-         title: title,
-	 external_thread_id: thread_id,
-	 thread: {
-	    title: title,
-	    body: message,
-	    status: {
-	       color: shade,
- 	       value: status
-	    }
-         }
+        event: "activity",
+        author: {
+          name: options['author'] || 'systemd',
+        },
+        title: title,
+        external_thread_id: thread_id,
+        thread: {
+          title: title,
+          body: message,
+          status: {
+            color: shade,
+            value: status
+          }
+        }
       )
     end
 
