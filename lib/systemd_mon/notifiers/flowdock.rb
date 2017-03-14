@@ -1,5 +1,6 @@
 require 'systemd_mon/error'
 require 'systemd_mon/notifiers/base'
+require 'systemd_mon/formatters/state_table_formatter'
 
 begin
   require 'flowdock'
@@ -51,6 +52,9 @@ module SystemdMon::Notifiers
     def chat(title, message, thread_id, shade, status)
       client.post_to_thread(
         event: "activity",
+        author: {
+          name: options['author'] || 'systemd',
+        },
         title: title,
         external_thread_id: thread_id,
         thread: {
