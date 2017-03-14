@@ -45,22 +45,22 @@ module SystemdMon::Notifiers
       log "sent flowdock notification"
     end
 
-  protected
+    protected
     attr_accessor :client, :options
 
     def chat(title, message, thread_id, shade, status)
       client.post_to_thread(
-         event: "activity",
-         title: title,
-	 external_thread_id: thread_id,
-	 thread: {
-	    title: title,
-	    body: message,
-	    status: {
-	       color: shade,
- 	       value: status
-	    }
-         }
+        event: "activity",
+        title: title,
+        external_thread_id: thread_id,
+        thread: {
+          title: title,
+          body: message,
+          status: {
+            color: shade,
+            value: status
+          }
+        }
       )
     end
 
