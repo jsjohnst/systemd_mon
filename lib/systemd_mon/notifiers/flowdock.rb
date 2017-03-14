@@ -36,7 +36,7 @@ module SystemdMon::Notifiers
       message = "Systemd unit #{unit.name} on #{notification.hostname} #{unit.state_change.status_text}: #{unit.state.active} (#{unit.state.sub})"
 
       if unit.state_change.length > 1
-        message << SystemdMon::Formatters::StateTableFormatter.new(unit).as_text
+        message << '<pre>' + SystemdMon::Formatters::StateTableFormatter.new(unit).as_text + '</pre>'
       end
 
       thread_id = "#{unit.name}-#{notification.hostname}"
